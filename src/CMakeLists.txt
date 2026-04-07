@@ -1,27 +1,22 @@
 # ---- Src dependencies ----
-
 CPMAddPackage(
     NAME mcl
-    GITHUB_REPOSITORY ccup/mcl
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/mcl/a345efe4087df11796d5fe08e3f6de391602e738"
 )
 
 CPMAddPackage(
     NAME alert-intf
-    GITHUB_REPOSITORY joycode-bootcamp/alert-intf
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/alert-intf/f816d7e3369137c820a2e5e428726608b0a46f91"
 )
 
 CPMAddPackage(
     NAME clean-intf
-    GITHUB_REPOSITORY joycode-bootcamp/clean-intf
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/clean-intf/7a18a6ad20cddd672473c0631ea1907da2193788"
 )
 
 CPMAddPackage(
     NAME wifi-intf
-    GITHUB_REPOSITORY joycode-bootcamp/wifi-intf
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/wifi-intf/a16ac36c8682d9981ce5cf7ffc6b5d73457258bd"
 )
 
 # ---- Collect all src files except main.c ----

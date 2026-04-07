@@ -1,7 +1,8 @@
-#include "mcl/log_levels.h"
+#include "mcl/log/log_level.h"
 #include <iostream>
 #include <string.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 namespace{
 	struct ConsoleState
@@ -69,16 +70,15 @@ namespace{
 
 			switch(level)
 			{
-			ON_LEVEL(MCL_FATAL_LEVEL, fail)
-			ON_LEVEL(MCL_ERR_LEVEL,   fail)
-			ON_LEVEL(MCL_WARN_LEVEL,  warn)
-			ON_LEVEL(MCL_SUCC_LEVEL,  succ)
-			ON_LEVEL(MCL_INFO_LEVEL,  info)
-			ON_LEVEL(MCL_DEBUG_LEVEL, debug)
+			ON_LEVEL(MCL_LOG_LEVEL_FATAL, fail)
+			ON_LEVEL(MCL_LOG_LEVEL_ERR,   fail)
+			ON_LEVEL(MCL_LOG_LEVEL_WARN,  warn)
+			ON_LEVEL(MCL_LOG_LEVEL_SUCC,  succ)
+			ON_LEVEL(MCL_LOG_LEVEL_INFO,  info)
+			ON_LEVEL(MCL_LOG_LEVEL_DEBUG, debug)
 			default: doPrint(normal, msg);
 			}
 		}
-
 	private:
 		StdoutListener(bool colorful): succ(colorful)
     								 , fail(colorful)

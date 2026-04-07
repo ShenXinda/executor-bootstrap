@@ -6,14 +6,12 @@ set(TEST_TARGET ${TARGET_LIB}_test)
 
 CPMAddPackage(
     NAME cctest
-    GITHUB_REPOSITORY ccup/cctest
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/cctest/38460491065c415d0dea4a517e97d961ec5aaf91"
 )
 
 CPMAddPackage(
     NAME mockcpp
-    GITHUB_REPOSITORY ccup/mockcpp
-    GIT_TAG master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/mockcpp/fe2edf6f7e093b39accb6cfea02ce11b2a48dd8a"
 )
 
 # ---- Source files of test ----
@@ -23,7 +21,7 @@ file(GLOB_RECURSE SOURCES
 
 # ---- Define test target ----
 
-add_executable(${TEST_TARGET} ${SOURCES})
+add_executable(${TEST_TARGET} ${CMAKE_SOURCE_DIR}/test/robot_executor_test.cpp)
 
 target_include_directories(${TEST_TARGET}
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}

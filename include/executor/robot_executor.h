@@ -12,9 +12,9 @@ enum class Heading : int {
 };
 
 struct Position {
-    int x;
-    int y;
-    Heading heading;
+    int x {0};
+    int y {0};
+    Heading heading {Heading::North};
 };
 
 class RobotExecutor {
@@ -27,7 +27,7 @@ public:
     Position GetPosition() const;
 
 private:
-    std::optional<Position> position_;
+    Position position_;
 };
 
 #endif

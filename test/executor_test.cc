@@ -2,21 +2,21 @@
 #include <mockcpp/mockcpp.hpp>
 #include "executor/executor.h"
 #include "executor_id.h"
-#include "mcl/log.h"
+#include "mcl/log/log.h"
 
 FIXTURE(ExecutorTest) {
 	BEFORE {
-		MCL_INFO("TEST SETUP");
+		MCL_LOG_INFO("TEST SETUP");
 	}
 
 	AFTER{
-		MCL_INFO("TEST TEARDOWN");
+		MCL_LOG_INFO("TEST TEARDOWN");
 	}
 
 	TEST("should get executor name") {
-		MCL_DBG("TEST RUNING...");
+		MCL_LOG_DBG("TEST RUNING...");
 		ASSERT_EQ(0, executor_get_id());
-		MCL_SUCC("TEST SUCCESS!");
+		MCL_LOG_SUCC("TEST SUCCESS!");
 	}
 
     TEST("should get exeuctor name by mock id") {
