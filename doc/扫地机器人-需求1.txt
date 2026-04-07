@@ -1,0 +1,13 @@
+Executor组件对Config组件提供初始化接口，负责将扫地机初始化在指定位置：
+(x, y, heading)；其中 x, y 为整数类型，heading对应四个方向(东、南、西、北)；
+
+Executor组件可以执行Controller组件发来的如下动作指令：
+
+turn right：右转90度，位置不变；
+
+turn left：左转90度，位置不变；
+
+Controller组件可以从Executor组件获取扫地机当前的坐标位置和朝向；
+如果Executor组件未被初始化位置，则接口默认返回0，0以及朝向北；
+
+要求：自行设计Executor组件对外的接口，实现上述功能，需要有测试用例；
