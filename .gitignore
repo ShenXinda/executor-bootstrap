@@ -6,3 +6,5 @@ deps/
 .project
 .cproject
 .opencode
+.cache
+compile_commands.json

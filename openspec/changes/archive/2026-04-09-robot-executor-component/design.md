@@ -39,7 +39,7 @@ heading取值为四个方向：东、南、西、北（枚举）。
 - 使用`class`定义`RobotExecutor`类
 - 使用`enum class`定义`Heading`枚举
 - 使用结构体返回位置信息
-- 使用`std::optional`表示未初始化状态
+- 使用标志位表示未初始化状态
 
 ### 3. RAII资源管理
 - 使用智能指针管理动态资源

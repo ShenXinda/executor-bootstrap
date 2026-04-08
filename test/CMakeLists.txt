@@ -21,7 +21,7 @@ file(GLOB_RECURSE SOURCES
 
 # ---- Define test target ----
 
-add_executable(${TEST_TARGET} ${CMAKE_SOURCE_DIR}/test/robot_executor_test.cpp)
+add_executable(${TEST_TARGET} ${SOURCES})
 
 target_include_directories(${TEST_TARGET}
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}

@@ -19,10 +19,15 @@ CPMAddPackage(
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/deps/wifi-intf/a16ac36c8682d9981ce5cf7ffc6b5d73457258bd"
 )
 
+# -----------------------------
+# 生成 compile_commands.json，用于 LSP（clangd/ccls）
+# -----------------------------
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # ---- Collect all src files except main.c ----
 
 file(GLOB_RECURSE MAIN_FILE 
-    "main.c"
+    "main.cpp"
 )
 
 file(GLOB_RECURSE SOURCES

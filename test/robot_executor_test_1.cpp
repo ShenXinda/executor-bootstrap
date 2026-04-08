@@ -11,6 +11,7 @@ FIXTURE(RobotExecutorTest) {
         MCL_LOG_INFO("TEST TEARDOWN");
     }
 
+    /* 测试功能：支持初始化扫地机位置 */ 
     TEST("should initialize position correctly") {
         RobotExecutor executor;
         executor.Initialize(5, 10, Heading::East);
@@ -30,6 +31,15 @@ FIXTURE(RobotExecutorTest) {
         ASSERT_EQ(Heading::South, pos.heading);
     }
 
+    TEST("should return default position when not initialized") {
+        RobotExecutor executor;
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+        ASSERT_EQ(Heading::North, pos.heading);
+    }
+
+    /* 测试功能：支持向扫地机发送左转和右转指令 */ 
     TEST("should turn right from north to east") {
         RobotExecutor executor;
         executor.Initialize(0, 0, Heading::North);
@@ -68,20 +78,12 @@ FIXTURE(RobotExecutorTest) {
         ASSERT_EQ(Heading::East, pos.heading);
     }
 
-    TEST("should return default position when not initialized") {
-        RobotExecutor executor;
-        auto pos = executor.GetPosition();
-        ASSERT_EQ(0, pos.x);
-        ASSERT_EQ(0, pos.y);
-        ASSERT_EQ(Heading::North, pos.heading);
-    }
-
-    TEST("should change position when turning right without initialization") {
+    TEST("should not change heading when turning right without initialization") {
         RobotExecutor executor;
         executor.TurnRight();
         auto pos = executor.GetPosition();
         ASSERT_EQ(0, pos.x);
         ASSERT_EQ(0, pos.y);
-        ASSERT_EQ(Heading::East, pos.heading);
+        ASSERT_EQ(Heading::North, pos.heading);
     }
 };
