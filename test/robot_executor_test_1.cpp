@@ -1,6 +1,9 @@
 #include <cctest/cctest.h>
 #include "executor/robot_executor.h"
 #include "mcl/log/log.h"
+#include "mockcpp/mockcpp.hpp"
+
+using namespace mockcpp;
 
 FIXTURE(RobotExecutorTest) {
     BEFORE {
@@ -85,5 +88,15 @@ FIXTURE(RobotExecutorTest) {
         ASSERT_EQ(0, pos.x);
         ASSERT_EQ(0, pos.y);
         ASSERT_EQ(Heading::North, pos.heading);
+    }
+
+    TEST("should set danger point and verify internal state") {
+        RobotExecutor executor;
+        executor.SetDangerPoint(5, 10);
+        executor.Initialize(0, 0, Heading::North);
+        executor.Forward();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(1, pos.y);
     }
 };

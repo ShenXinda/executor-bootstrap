@@ -10,6 +10,12 @@ void RobotExecutor::Initialize(int32_t x, int32_t y, Heading heading)
     initialized_ = true;
 }
 
+void RobotExecutor::SetDangerPoint(int32_t x, int32_t y)
+{
+    dangerPoint_ = Position{x, y, Heading::North};
+    hasDangerPoint_ = true;
+}
+
 void RobotExecutor::TurnRight()
 {
     if (!initialized_) {
@@ -17,6 +23,11 @@ void RobotExecutor::TurnRight()
     }
     int32_t newHeading = (static_cast<int32_t>(position_.heading) + 1) % 4;
     position_.heading = static_cast<Heading>(newHeading);
+    if (hasDangerPoint_ && 
+        dangerPoint_.x == position_.x && 
+        dangerPoint_.y == position_.y) {
+        alert(IN_DANGEROUS, position_.x, position_.y);
+    }
 }
 
 void RobotExecutor::TurnLeft()
@@ -26,6 +37,11 @@ void RobotExecutor::TurnLeft()
     }
     int32_t newHeading = (static_cast<int32_t>(position_.heading) + 3) % 4;
     position_.heading = static_cast<Heading>(newHeading);
+    if (hasDangerPoint_ && 
+        dangerPoint_.x == position_.x && 
+        dangerPoint_.y == position_.y) {
+        alert(IN_DANGEROUS, position_.x, position_.y);
+    }
 }
 
 void RobotExecutor::Forward()
@@ -49,6 +65,11 @@ void RobotExecutor::Forward()
         default:
             break;
     }
+    if (hasDangerPoint_ && 
+        dangerPoint_.x == position_.x && 
+        dangerPoint_.y == position_.y) {
+        alert(IN_DANGEROUS, position_.x, position_.y);
+    }
 }
 
 void RobotExecutor::Backward()
@@ -71,6 +92,11 @@ void RobotExecutor::Backward()
             break;
         default:
             break;
+    }
+    if (hasDangerPoint_ && 
+        dangerPoint_.x == position_.x && 
+        dangerPoint_.y == position_.y) {
+        alert(IN_DANGEROUS, position_.x, position_.y);
     }
 }
 

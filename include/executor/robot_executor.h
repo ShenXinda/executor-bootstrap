@@ -2,7 +2,10 @@
 #define ROBOT_EXECUTOR_H
 
 #include "mcl/stdc.h"
+#include "alert/alert.h"
 #include <cstdint>
+
+MCL_STDC_BEGIN
 
 enum class Heading : int32_t {
     North = 0,
@@ -22,6 +25,7 @@ public:
     RobotExecutor();
 
     void Initialize(int32_t x, int32_t y, Heading heading);
+    void SetDangerPoint(int32_t x, int32_t y);
     void TurnRight();
     void TurnLeft();
     void Forward();
@@ -31,6 +35,10 @@ public:
 private:
     Position position_;
     bool initialized_ {false};
+    bool hasDangerPoint_ {false};
+    Position dangerPoint_;
 };
+
+MCL_STDC_END
 
 #endif
