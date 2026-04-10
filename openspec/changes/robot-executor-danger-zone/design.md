@@ -13,11 +13,118 @@ Alert组件接口已存在于deps/alert-intf：
 - 在每次移动后检测是否到达危险坐标点
 - 到达危险坐标时调用alert(IN_DANGEROUS, x, y)触发告警
 - 支持重复触发告警（同一点多次经过）
+- 使用观察者模式解耦检测逻辑
 
 **Non-Goals:**
 - 多个危险坐标点管理（仅支持单一危险点）
 - 危险坐标点与初始化位置冲突检测（由Config保证）
 - 告警后的自动规避行为
+
+## Design - Observer Pattern
+
+### Architecture (PlantUML Class Diagram)
+
+```plantuml
+@startuml
+hide empty members
+
+class RobotExecutor {
+    - position_: Position
+    - initialized_: bool
+    - hasDangerPoint_: bool
+    - dangerPoint_: Position
+    - observers_: vector<PositionObserver*>
+    + Initialize(x, y, heading)
+    + SetDangerPoint(x, y)
+    + TurnRight()
+    + TurnLeft()
+    + Forward()
+    + Backward()
+    + GetPosition(): Position
+    + RegisterObserver(observer: PositionObserver*)
+    + UnregisterObserver(observer: PositionObserver*)
+    - NotifyPositionChanged()
+}
+
+interface PositionObserver {
+    + OnPositionChanged(newPosition: Position)
+}
+
+class DangerZoneObserver {
+    - hasDangerPoint_: bool
+    - dangerPointX_: int32_t
+    - dangerPointY_: int32_t
+    + DangerZoneObserver()
+    + SetDangerPoint(x, y)
+    + ClearDangerPoint()
+    + OnPositionChanged(newPosition: Position)
+}
+
+class Position {
+    + x: int32_t
+    + y: int32_t
+    + heading: Heading
+}
+
+enum Heading {
+    North
+    East
+    South
+    West
+}
+
+RobotExecutor --> PositionObserver : notifies
+PositionObserver <|.. DangerZoneObserver
+Position --> Heading
+
+@enduml
+```
+
+### Class Design
+
+**PositionObserver (Interface)**
+```cpp
+class PositionObserver {
+public:
+    virtual ~PositionObserver() = default;
+    virtual void OnPositionChanged(const Position& newPosition) = 0;
+};
+```
+
+**DangerZoneObserver (Implementation)**
+```cpp
+class DangerZoneObserver final : public PositionObserver {
+public:
+    explicit DangerZoneObserver();
+    void SetDangerPoint(int32_t x, int32_t y);
+    void OnPositionChanged(const Position& newPosition) override;
+    
+private:
+    bool hasDangerPoint_;
+    int32_t dangerPointX_;
+    int32_t dangerPointY_;
+};
+```
+
+**RobotExecutor Changes**
+```cpp
+class RobotExecutor {
+public:
+    void RegisterObserver(PositionObserver* observer);
+    void UnregisterObserver(PositionObserver* observer);
+    
+private:
+    void NotifyPositionChanged();
+    std::vector<PositionObserver*> observers_;
+};
+```
+
+### Benefits
+
+1. **消除重复代码**: 将危险点检测逻辑集中到DangerZoneObserver中，TurnRight/TurnLeft/Forward/Backward不再需要各自包含检测逻辑
+2. **单一职责**: RobotExecutor负责移动，危险检测由专门的观察者负责
+3. **可扩展性**: 可轻松添加多个观察者（如清洁区域、路径记录等）
+4. **可测试性**: DangerZoneObserver可独立单元测试
 
 ## Decisions
 
@@ -30,9 +137,16 @@ Alert组件接口已存在于deps/alert-intf：
 - 使用alert接口，传入当前危险坐标的x, y值
 
 ### 数据结构
-使用std::optional<Position>表示可选的危险坐标点：
-- 未设置时为std::nullopt
+使用bool + separate coordinates表示可选的危险坐标点：
+- 未设置时hasDangerPoint_为false
 - 设置后存储危险点坐标
+
+## Implementation
+
+1. 创建PositionObserver接口 (position_observer.h)
+2. 创建DangerZoneObserver实现 (danger_zone_observer.h + .cpp)
+3. 修改RobotExecutor添加观察者注册机制
+4. RobotExecutor在每次位置变化后调用NotifyPositionChanged()
 
 ## Risks / Trade-offs
 

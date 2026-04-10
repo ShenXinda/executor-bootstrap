@@ -1,0 +1,157 @@
+需求robot-executor-danger-zone完成后，代码存在以下问题：
+判断危险点坐标并调用alert告警的代码在TurnRight、TurnLeft、Forward、Backward四个动作重复调用，存在多处分散修改问题
+现在我们来探讨如何通过常见的设计模式优化代码的实现
+约束条件：
+1）RobotExecutor作为对外约定好的类，其接口不能改变，只能优化其内部实现逻辑
+2）允许创建更多的类 
+Thinking: 用户想要探讨如何优化 RobotExecutor 中的代码，避免在 TurnRight、TurnLeft、Forward、Backward 四个方法中重复调用判断危险点坐标并调用 alert 的代码。
+用户给出了约束条件：
+1. RobotExecutor 接口不能改变，只能优化内部实现
+2. 允许创建更多的类
+让我先分析一下当前的代码结构，然后探讨合适的设计模式。
+当前代码问题分析：
+- 四个动作方法中都有相同的危险点检测逻辑
+- 检测逻辑：检查 hasDangerPoint_ && dangerPoint_.x == position_.x && dangerPoint_.y == position_.y，然后调用 alert
+可能的设计模式：
+1. 模板方法模式 (Template Method) - 将相同的检测逻辑提取到基类或私有方法中
+2. 策略模式 (Strategy) - 将 alert 行为抽象为策略类
+3. 观察者模式 (Observer) - 将 alert 注册为观察者，在位置变化时通知
+4. 命令模式 (Command) - 将动作封装为命令，在命令执行后检查危险点
+5. 责任链模式 (Chain of Responsibility) - 动作执行后传递检查
+让我先仔细看看当前的代码结构，理解现有的实现。
+让我先仔细分析当前代码的问题，然后探讨优化方案。
+→ Read src/robot_executor.cpp 
+Thinking: 用户想让我分析如何优化这段代码。当前的问题是：
+- 判断危险点坐标并调用alert的代码在 TurnRight、TurnLeft、Forward、Backward 四个方法中重复出现
+让我思考一下可以使用的设计模式：
+1. 模板方法模式 (Template Method): 提取公共的"移动后检查危险点"逻辑到基类或模板方法中
+2. 策略模式 (Strategy): 将危险点检测逻辑封装为一个策略类
+3. 装饰器模式 (Decorator): 在动作执行后添加危险点检测的装饰器
+4. 命令模式 (Command): 将每个动作封装为命令，命令执行后可以触发检查
+5. 观察者模式 (Observer): 位置变化时通知危险点检测器
+让我分析每种方案的优缺点：
+方案1: 模板方法/提取检查方法
+最简单，创建一个私有方法来统一检查：
+void RobotExecutor::CheckDangerPoint() {
+    if (hasDangerPoint_ && 
+        dangerPoint_.x == position_.x && 
+        dangerPoint_.y == position_.y) {
+        alert(IN_DANGEROUS, position_.x, position_.y);
+    }
+}
+这是最简单直接的方案，符合开闭原则，减少了代码重复。
+方案2: 策略模式
+创建一个 DangerChecker 类：
+class DangerChecker {
+public:
+    virtual void Check(const Position& current, const Position& danger) = 0;
+};
+这样可以把检测逻辑抽离出来，便于测试和替换。
+方案3: 观察者模式
+位置变化时自动通知观察者，多个观察者可以订阅位置更新，适合需要灵活扩展检测逻辑的场景。
+考虑到用户提到 RobotExecutor 接口不能改变，但允许创建更多类，我认为最实用的做法是引入一个 DangerChecker 策略类来封装检测逻辑。这样既不改变现有接口，又能将检测机制独立出来，提高可维护性。
+我来分析这个问题。当前代码确实存在重复：
+// TurnRight、TurnLeft、Forward、Backward 中都有相同代码：
+if (hasDangerPoint_ && 
+    dangerPoint_.x == position_.x && 
+    dangerPoint_.y == position_.y) {
+    alert(IN_DANGEROUS, position_.x, position_.y);
+}
+让我思考几种优化方案：
+方案对比
+模式
+提取检查方法
+策略模式
+观察者模式
+---
+让我看看项目中是否有类似的可参考模式：
+✱ Grep "class.*Handler|class.*Checker|class.*Observer" 
+Thinking: Let me also look at the header file to understand the interface constraints:
+→ Read include/executor/robot_executor.h 
+Thinking: 好的，我现在理解了问题。让我分析一下：
+当前问题：
+- 判断危险点并调用 alert 的代码在 TurnRight、TurnLeft、Forward、Backward 四个方法中重复出现
+- 如果未来需要修改危险点检测逻辑（如改变告警条件），需要在 4 个地方修改
+设计模式选择：
+1. 模板方法模式 (Template Method) - 把公共逻辑抽取到基类
+2. 策略模式 (Strategy) - 将危险点检测逻辑封装到独立类
+3. 观察者模式 (Observer) - 位置变化时通知危险点检测器
+4. 命令模式 (Command) - 将每个动作封装为命令，命令执行后检查危险点
+让我比较一下：
+| 模式 | 优点 | 缺点 |
+|------|------|------|
+| 模板方法 | 简单，直接抽取代码 | 需要继承，可能过度设计 |
+| 策略模式 | 解耦彻底，灵活 | 需要更多类 |
+| 观察者模式 | 解耦动作和检测 | 可能过度设计 |
+| 命令模式 | 动作和检测分离 | 需要更多类 |
+考虑到：
+- RobotExecutor 接口不能变
+- 约束允许创建更多类
+- 目标是消除重复代码
+我认为策略模式或模板方法模式最合适。
+策略模式更灵活，将危险点检测逻辑封装为独立策略类，让 RobotExecutor 持有策略实例并在动作后调用。模板方法则更直接，通过私有方法在各处调用通用检测逻辑。
+我可以提供一个完整的解决方案：创建 DangerZoneChecker 类来处理检测和告警逻辑，RobotExecutor 持有实例并在动作后调用 check 方法。这样既能消除代码重复，又保持接口不变，同时提高可维护性。我应该先确认用户对这个方向的看法。
+我已经看到了代码结构。让我先确认一下理解：
+当前问题：
+TurnRight:  if (hasDangerPoint_ && dangerPoint_.x == position_.x && dangerPoint_.y == position_.y) { alert(...); }
+TurnLeft:   if (hasDangerPoint_ && dangerPoint_.x == position_.x && dangerPoint_.y == position_.y) { alert(...); }
+Forward:    if (hasDangerPoint_ && dangerPoint_.x == position_.x && dangerPoint_.y == position_.y) { alert(...); }
+Backward:   if (hasDangerPoint_ && dangerPoint_.x == position_.x && dangerPoint_.y == position_.y) { alert(...); }
+重复代码在 4 个地方。
+---
+设计模式对比
+我有几个方案，各有优劣：
+1. 模板方法模式 - 抽取私有方法
+private:
+    void CheckDangerPoint() {
+        if (hasDangerPoint_ && 
+            dangerPoint_.x == position_.x && 
+            dangerPoint_.y == position_.y) {
+            alert(IN_DANGEROUS, position_.x, position_.y);
+        }
+    }
+优点：最小改动，简单直接
+缺点：仍是同一个类内，扩展性一般
+---
+2. 策略模式 - 独立检测器类
+class DangerZoneChecker {
+public:
+    void Check(const Position& current, const Position& danger, bool hasDanger);
+};
+class RobotExecutor {
+private:
+    DangerZoneChecker dangerChecker_;
+    // ...
+};
+优点：解耦彻底，检测逻辑可独立测试和复用
+缺点：需要新增类
+---
+3. 观察者模式 - 位置变化监听
+class PositionObserver {
+public:
+    virtual void OnPositionChanged(const Position& newPos) = 0;
+};
+class DangerZoneObserver : public PositionObserver {
+    void OnPositionChanged(const Position& pos) override;
+};
+class RobotExecutor {
+private:
+    std::vector<PositionObserver*> observers_;
+};
+优点：更灵活，可添加多个观察者
+缺点：对于这个简单场景可能过度设计
+---
+我的建议
+考虑到你的约束：
+- 接口不变 ✓
+- 允许创建更多类 ✓  
+- 解决分散修改问题 ✓
+推荐策略模式，理由：
+1. 最小侵入性 - 不改变现有接口
+2. 单一职责 - 检测逻辑独立
+3. 可测试性 - 可单独测试 DangerZoneChecker
+4. 可扩展 - 未来可添加其他策略（如安全区域、路径规划等）
+---
+你倾向哪种方案？ 或者有其他考虑？比如：
+- 是否需要支持多个观察者（未来可能有清洁区域告警）？
+- 是否需要动态切换检测策略？

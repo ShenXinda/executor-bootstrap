@@ -23,11 +23,7 @@ void RobotExecutor::TurnRight()
     }
     int32_t newHeading = (static_cast<int32_t>(position_.heading) + 1) % 4;
     position_.heading = static_cast<Heading>(newHeading);
-    if (hasDangerPoint_ && 
-        dangerPoint_.x == position_.x && 
-        dangerPoint_.y == position_.y) {
-        alert(IN_DANGEROUS, position_.x, position_.y);
-    }
+    NotifyPositionChanged();
 }
 
 void RobotExecutor::TurnLeft()
@@ -37,11 +33,7 @@ void RobotExecutor::TurnLeft()
     }
     int32_t newHeading = (static_cast<int32_t>(position_.heading) + 3) % 4;
     position_.heading = static_cast<Heading>(newHeading);
-    if (hasDangerPoint_ && 
-        dangerPoint_.x == position_.x && 
-        dangerPoint_.y == position_.y) {
-        alert(IN_DANGEROUS, position_.x, position_.y);
-    }
+    NotifyPositionChanged();
 }
 
 void RobotExecutor::Forward()
@@ -65,11 +57,7 @@ void RobotExecutor::Forward()
         default:
             break;
     }
-    if (hasDangerPoint_ && 
-        dangerPoint_.x == position_.x && 
-        dangerPoint_.y == position_.y) {
-        alert(IN_DANGEROUS, position_.x, position_.y);
-    }
+    NotifyPositionChanged();
 }
 
 void RobotExecutor::Backward()
@@ -93,11 +81,7 @@ void RobotExecutor::Backward()
         default:
             break;
     }
-    if (hasDangerPoint_ && 
-        dangerPoint_.x == position_.x && 
-        dangerPoint_.y == position_.y) {
-        alert(IN_DANGEROUS, position_.x, position_.y);
-    }
+    NotifyPositionChanged();
 }
 
 Position RobotExecutor::GetPosition() const
@@ -106,4 +90,26 @@ Position RobotExecutor::GetPosition() const
         return Position{0, 0, Heading::North};
     }
     return position_;
+}
+
+void RobotExecutor::RegisterObserver(PositionObserver* observer)
+{
+    observers_.push_back(observer);
+}
+
+void RobotExecutor::UnregisterObserver(PositionObserver* observer)
+{
+    for (auto it = observers_.begin(); it != observers_.end(); ++it) {
+        if (*it == observer) {
+            observers_.erase(it);
+            break;
+        }
+    }
+}
+
+void RobotExecutor::NotifyPositionChanged()
+{
+    for (auto* observer : observers_) {
+        observer->OnPositionChanged(position_);
+    }
 }
