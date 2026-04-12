@@ -173,4 +173,17 @@ FIXTURE(CleanZoneTest) {
         executor.Forward();
         GlobalMockObject::verify();
     }
+
+    TEST("should not set multiple clean zone") {
+        MOCKER(clean).expects(never());
+        RobotExecutor executor;
+        CleanZoneObserver observer;
+        // 多次设置清扫区域，第一次生效
+        observer.SetCleanPoint(0, 1);
+        observer.SetCleanPoint(1, 0);
+        executor.RegisterObserver(&observer);
+        executor.Initialize(0, 0, Heading::East);
+        executor.Forward();
+        GlobalMockObject::verify();
+    }
 };

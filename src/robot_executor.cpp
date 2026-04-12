@@ -10,12 +10,6 @@ void RobotExecutor::Initialize(int32_t x, int32_t y, Heading heading)
     initialized_ = true;
 }
 
-void RobotExecutor::SetDangerPoint(int32_t x, int32_t y)
-{
-    dangerPoint_ = Position{x, y, Heading::North};
-    hasDangerPoint_ = true;
-}
-
 void RobotExecutor::TurnRight()
 {
     if (!initialized_) {

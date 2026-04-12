@@ -3,20 +3,22 @@
 
 #include "mcl/stdc.h"
 #include "executor/position_observer.h"
+#include "executor/zone_manager.h"
 #include <cstdint>
 
 MCL_STDC_BEGIN
 
 class DangerZoneObserver final : public PositionObserver {
 public:
-    explicit DangerZoneObserver();
+    explicit DangerZoneObserver(ZoneManager* zoneManager = nullptr);
 
-    void SetDangerPoint(int32_t x, int32_t y);
-    void ClearDangerPoint();
+    bool SetDangerPoint(int32_t x, int32_t y);
+    bool ClearDangerPoint();
 
     void OnPositionChanged(const Position& newPosition) override;
 
 private:
+    ZoneManager* zoneManager_;
     bool hasDangerPoint_;
     int32_t dangerPointX_;
     int32_t dangerPointY_;

@@ -21,12 +21,22 @@
 ## 输出格式
 - 头文件(.h)和实现文件(.cpp)分开
 - 使用include guard
+- 函数的花括号使用Allman 风格，参考：
+void foo()
+{
+    // do something
+}
+- if、for、while、switch等控制语句的花括号使用K&R风格，不允许存在不使用花括号的单行，参考：
+if () {
+    // do something
+}
 
 ## 代码规范
 - 变量名使用小驼峰，类成员变量以下划线结尾
 - 函数名、类名使用大驼峰
 - 单个函数尽量不要超过50行
 - 使用跨平台一致的整数类型，如int32_t、size_t、ssize_t等
+- 常量名使用k + CamelCase风格
 
 ## Build Commands
 

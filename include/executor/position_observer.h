@@ -2,12 +2,9 @@
 #define POSITION_OBSERVER_H
 
 #include "mcl/stdc.h"
-#include <cstdint>
+#include "robot_common_type.h"
 
 MCL_STDC_BEGIN
-
-enum class Heading : int32_t;
-struct Position;
 
 class PositionObserver {
 public:
