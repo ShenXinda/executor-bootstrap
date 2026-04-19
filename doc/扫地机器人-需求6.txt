@@ -1,0 +1,10 @@
+Executor组件可以执行Controller组件发来的如下动作指令：
+
+turn round: 旋转180度（执行右转两次），位置不变
+
+forward n step: 沿当前朝向前进n步，方向不变
+
+backward n step: 沿当前朝向后退n步，方向不变
+
+注意：命令行过程中，不要忽略了路径上需要触发的告警和清扫活动；
+一个turn round动作指令仅触发一次告警

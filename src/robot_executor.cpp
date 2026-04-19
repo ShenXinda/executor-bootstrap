@@ -30,6 +30,17 @@ void RobotExecutor::TurnLeft()
     NotifyPositionChanged();
 }
 
+void RobotExecutor::TurnRound()
+{
+    if (!initialized_) {
+        return;
+    }
+    int32_t currentHeading = static_cast<int32_t>(position_.heading);
+    int32_t newHeading = (currentHeading + 2) % 4;
+    position_.heading = static_cast<Heading>(newHeading);
+    NotifyPositionChanged();
+}
+
 void RobotExecutor::Forward()
 {
     if (!initialized_) {
@@ -76,6 +87,26 @@ void RobotExecutor::Backward()
             break;
     }
     NotifyPositionChanged();
+}
+
+void RobotExecutor::Forward(int32_t steps)
+{
+    if (!initialized_ || steps <= 0) {
+        return;
+    }
+    for (int32_t i = 0; i < steps; ++i) {
+        Forward();
+    }
+}
+
+void RobotExecutor::Backward(int32_t steps)
+{
+    if (!initialized_ || steps <= 0) {
+        return;
+    }
+    for (int32_t i = 0; i < steps; ++i) {
+        Backward();
+    }
 }
 
 Position RobotExecutor::GetPosition() const

@@ -17,8 +17,11 @@ public:
     void Initialize(int32_t x, int32_t y, Heading heading);
     void TurnRight();
     void TurnLeft();
+    void TurnRound();
     void Forward();
     void Backward();
+    void Forward(int32_t steps);
+    void Backward(int32_t steps);
     Position GetPosition() const;
 
     void RegisterObserver(PositionObserver* observer);

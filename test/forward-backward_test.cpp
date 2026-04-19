@@ -99,4 +99,122 @@ FIXTURE(RobotExecutorTest) {
         ASSERT_EQ(0, pos.x);
         ASSERT_EQ(0, pos.y);
     }
+
+    /* 测试功能：旋转180度 */
+    TEST("should turn round from north to south") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.TurnRound();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(Heading::South, pos.heading);
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should turn round from east to west") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::East);
+        executor.TurnRound();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(Heading::West, pos.heading);
+    }
+
+    TEST("should turn round from south to north") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::South);
+        executor.TurnRound();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(Heading::North, pos.heading);
+    }
+
+    TEST("should turn round from west to east") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::West);
+        executor.TurnRound();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(Heading::East, pos.heading);
+    }
+
+    /* 测试功能：多步移动 */
+    TEST("should move forward 3 steps north") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.Forward(3);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(3, pos.y);
+    }
+
+    TEST("should move forward 5 steps east") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::East);
+        executor.Forward(5);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(5, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should move backward 2 steps north") {
+        RobotExecutor executor;
+        executor.Initialize(0, 3, Heading::North);
+        executor.Backward(2);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(1, pos.y);
+    }
+
+    TEST("should move backward 3 steps east") {
+        RobotExecutor executor;
+        executor.Initialize(5, 0, Heading::East);
+        executor.Backward(3);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(2, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    /* 测试功能：边界条件 */
+    TEST("should not move when forward with 0 steps") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.Forward(0);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should not move when forward with negative steps") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.Forward(-1);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should not move when backward with 0 steps") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.Backward(0);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should not move when backward with negative steps") {
+        RobotExecutor executor;
+        executor.Initialize(0, 0, Heading::North);
+        executor.Backward(-1);
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(0, pos.x);
+        ASSERT_EQ(0, pos.y);
+    }
+
+    TEST("should turn round not change position") {
+        RobotExecutor executor;
+        executor.Initialize(5, 5, Heading::North);
+        executor.TurnRound();
+        auto pos = executor.GetPosition();
+        ASSERT_EQ(5, pos.x);
+        ASSERT_EQ(5, pos.y);
+    }
 };
