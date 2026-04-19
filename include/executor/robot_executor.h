@@ -6,13 +6,16 @@
 #include "robot_common_type.h"
 #include "executor/position_observer.h"
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 MCL_STDC_BEGIN
 
-class RobotExecutor {
+class RobotExecutor
+{
 public:
     RobotExecutor();
+    ~RobotExecutor();
 
     void Initialize(int32_t x, int32_t y, Heading heading);
     void TurnRight();
@@ -28,11 +31,8 @@ public:
     void UnregisterObserver(PositionObserver* observer);
 
 private:
-    void NotifyPositionChanged();
-
-    Position position_;
-    bool initialized_ {false};
-    std::vector<PositionObserver*> observers_;
+    struct Impl;
+    std::unique_ptr<Impl> impl_;
 };
 
 MCL_STDC_END
