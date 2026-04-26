@@ -159,6 +159,50 @@ public:
         dangerObserver_.OnPositionChanged(position_);
         cleanObserver_.OnPositionChanged(position_);
     }
+
+    void ExecuteCommand(const RepeatCommand& cmd)
+    {
+        if (cmd.repeatTimes <= 0) {
+            return;
+        }
+
+        switch (cmd.type) {
+            case CommandType::Forward:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    Forward();
+                }
+                break;
+            case CommandType::Backward:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    Backward();
+                }
+                break;
+            case CommandType::TurnRight:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    TurnRight();
+                }
+                break;
+            case CommandType::TurnLeft:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    TurnLeft();
+                }
+                break;
+            case CommandType::TurnRound:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    TurnRound();
+                }
+                break;
+            case CommandType::Sequence:
+                for (int32_t i = 0; i < cmd.repeatTimes; ++i) {
+                    for (const auto& subCmd : cmd.subCommands) {
+                        ExecuteCommand(subCmd);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 };
 
 RobotExecutor::RobotExecutor()
@@ -231,4 +275,9 @@ bool RobotExecutor::SetCleanPoint(int32_t x, int32_t y)
 bool RobotExecutor::ClearCleanPoint()
 {
     return impl_->ClearCleanPoint();
+}
+
+void RobotExecutor::ExecuteCommand(const RepeatCommand& cmd)
+{
+    impl_->ExecuteCommand(cmd);
 }

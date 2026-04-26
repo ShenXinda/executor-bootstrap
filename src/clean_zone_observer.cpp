@@ -21,12 +21,9 @@ bool CleanZoneObserver::SetCleanPoint(int32_t x, int32_t y)
         } else {
             return false;
         }
+    } else {
+        return false;
     }
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    cleanPointX_ = x;
-    cleanPointY_ = y;
-    hasCleanPoint_ = true;
-    return true;
 }
 
 bool CleanZoneObserver::ClearCleanPoint()
@@ -42,10 +39,9 @@ bool CleanZoneObserver::ClearCleanPoint()
         } else {
             return false;
         }
+    } else {
+        return false;
     }
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    hasCleanPoint_ = false;
-    return true;
 }
 
 void CleanZoneObserver::Reset()
@@ -63,11 +59,5 @@ void CleanZoneObserver::OnPositionChanged(const Position& newPosition)
         zoneManager_->OnPositionChanged(newPosition);
         hasCleaned_ = true;
         return;
-    }
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    if (cleanPointX_ == newPosition.x && 
-        cleanPointY_ == newPosition.y) {
-        clean(newPosition.x, newPosition.y);
-        hasCleaned_ = true;
     }
 }

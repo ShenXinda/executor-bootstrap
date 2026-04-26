@@ -21,12 +21,9 @@ bool DangerZoneObserver::SetDangerPoint(int32_t x, int32_t y)
         } else {
             return false;
         }
+    } else {
+        return false;
     }
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    dangerPointX_ = x;
-    dangerPointY_ = y;
-    hasDangerPoint_ = true;
-    return true;
 }
 
 bool DangerZoneObserver::ClearDangerPoint()
@@ -42,10 +39,9 @@ bool DangerZoneObserver::ClearDangerPoint()
         } else {
             return false;
         }
+    } else {
+        return false;
     }
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    hasDangerPoint_ = false;
-    return true;
 }
 
 void DangerZoneObserver::OnPositionChanged(const Position& newPosition)
@@ -57,11 +53,5 @@ void DangerZoneObserver::OnPositionChanged(const Position& newPosition)
     if (zoneManager_) {
         zoneManager_->OnPositionChanged(newPosition);
         return;
-    }
-
-    // 兼容未设置区域管理类（ZoneManager）的使用方式
-    if (dangerPointX_ == newPosition.x && 
-        dangerPointY_ == newPosition.y) {
-        alert(IN_DANGEROUS, newPosition.x, newPosition.y);
     }
 }

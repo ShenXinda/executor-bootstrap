@@ -6,8 +6,28 @@
 #include "robot_common_type.h"
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 MCL_STDC_BEGIN
+
+enum class CommandType {
+    Forward,
+    Backward,
+    TurnRight,
+    TurnLeft,
+    TurnRound,
+    RepeatForward,
+    RepeatBackward,
+    RepeatTurnRight,
+    RepeatTurnLeft,
+    Sequence
+};
+
+struct RepeatCommand {
+    CommandType type;
+    int32_t repeatTimes;
+    std::vector<RepeatCommand> subCommands;
+};
 
 class RobotExecutor
 {
@@ -29,6 +49,8 @@ public:
     bool ClearDangerPoint();
     bool SetCleanPoint(int32_t x, int32_t y);
     bool ClearCleanPoint();
+
+    void ExecuteCommand(const RepeatCommand& cmd);
 
 private:
     struct Impl;
