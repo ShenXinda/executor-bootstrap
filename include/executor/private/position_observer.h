@@ -2,7 +2,7 @@
 #define POSITION_OBSERVER_H
 
 #include "mcl/stdc.h"
-#include "robot_common_type.h"
+#include "executor/robot_common_type.h"
 
 MCL_STDC_BEGIN
 

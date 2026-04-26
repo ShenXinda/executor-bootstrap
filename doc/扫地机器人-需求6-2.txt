@@ -1,0 +1,13 @@
+这是一个重构需求：
+所有对外接口应该要RobotExecutor类中提供，PositionObserver及其子类、ZoneManager类不能对外呈现，提出以下诉求
+1）RobotExecutor类新增接口：
+bool SetDangerPoint(int32_t x, int32_t y);
+bool ClearDangerPoint();
+bool SetCleanPoint(int32_t x, int32_t y);
+bool ClearCleanPoint();
+
+2）include目录下新增private目录，以下头文件放到private目录下
+clean_zone_observer.h
+danger_zone_observer.h
+position_observer.h
+zone_manager.h

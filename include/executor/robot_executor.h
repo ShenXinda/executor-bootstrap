@@ -4,10 +4,8 @@
 #include "mcl/stdc.h"
 #include "alert/alert.h"
 #include "robot_common_type.h"
-#include "executor/position_observer.h"
 #include <cstdint>
 #include <memory>
-#include <vector>
 
 MCL_STDC_BEGIN
 
@@ -27,8 +25,10 @@ public:
     void Backward(int32_t steps);
     Position GetPosition() const;
 
-    void RegisterObserver(PositionObserver* observer);
-    void UnregisterObserver(PositionObserver* observer);
+    bool SetDangerPoint(int32_t x, int32_t y);
+    bool ClearDangerPoint();
+    bool SetCleanPoint(int32_t x, int32_t y);
+    bool ClearCleanPoint();
 
 private:
     struct Impl;

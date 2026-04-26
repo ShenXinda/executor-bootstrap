@@ -4,7 +4,7 @@
 #include "mcl/stdc.h"
 #include <cstdint>
 #include <array>
-#include "robot_common_type.h"
+#include "executor/robot_common_type.h"
 
 MCL_STDC_BEGIN
 

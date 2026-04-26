@@ -1,16 +1,23 @@
 #include "executor/robot_executor.h"
 #include "executor/robot_common_type.h"
+#include "executor/private/danger_zone_observer.h"
+#include "executor/private/clean_zone_observer.h"
+#include "executor/private/zone_manager.h"
 
 class RobotExecutor::Impl
 {
 private:
     Position position_;
     bool initialized_ {false};
-    std::vector<PositionObserver*> observers_;
+    ZoneManager zoneManager_;
+    DangerZoneObserver dangerObserver_;
+    CleanZoneObserver cleanObserver_;
 
 public:
     Impl()
-        : initialized_(false)
+        : initialized_(false), 
+          dangerObserver_(&zoneManager_), 
+          cleanObserver_(&zoneManager_)
     {
     }
 
@@ -127,27 +134,30 @@ public:
         return position_;
     }
 
-    void RegisterObserver(PositionObserver* observer)
+    bool SetDangerPoint(int32_t x, int32_t y)
     {
-        observers_.push_back(observer);
+        return dangerObserver_.SetDangerPoint(x, y);
     }
 
-    void UnregisterObserver(PositionObserver* observer)
+    bool ClearDangerPoint()
     {
-        for (auto it = observers_.begin(); it != observers_.end(); ++it) {
-            if (*it == observer) {
-                observers_.erase(it);
-                break;
-            }
-        }
+        return dangerObserver_.ClearDangerPoint();
     }
 
-private:
+    bool SetCleanPoint(int32_t x, int32_t y)
+    {
+        return cleanObserver_.SetCleanPoint(x, y);
+    }
+
+    bool ClearCleanPoint()
+    {
+        return cleanObserver_.ClearCleanPoint();
+    }
+
     void NotifyPositionChanged()
     {
-        for (auto* observer : observers_) {
-            observer->OnPositionChanged(position_);
-        }
+        dangerObserver_.OnPositionChanged(position_);
+        cleanObserver_.OnPositionChanged(position_);
     }
 };
 
@@ -203,12 +213,22 @@ Position RobotExecutor::GetPosition() const
     return impl_->GetPosition();
 }
 
-void RobotExecutor::RegisterObserver(PositionObserver* observer)
+bool RobotExecutor::SetDangerPoint(int32_t x, int32_t y)
 {
-    impl_->RegisterObserver(observer);
+    return impl_->SetDangerPoint(x, y);
 }
 
-void RobotExecutor::UnregisterObserver(PositionObserver* observer)
+bool RobotExecutor::ClearDangerPoint()
 {
-    impl_->UnregisterObserver(observer);
+    return impl_->ClearDangerPoint();
+}
+
+bool RobotExecutor::SetCleanPoint(int32_t x, int32_t y)
+{
+    return impl_->SetCleanPoint(x, y);
+}
+
+bool RobotExecutor::ClearCleanPoint()
+{
+    return impl_->ClearCleanPoint();
 }

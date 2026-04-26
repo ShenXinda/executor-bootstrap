@@ -2,8 +2,8 @@
 #define DANGER_ZONE_OBSERVER_H
 
 #include "mcl/stdc.h"
-#include "executor/position_observer.h"
-#include "executor/zone_manager.h"
+#include "executor/private/position_observer.h"
+#include "executor/private/zone_manager.h"
 #include <cstdint>
 
 MCL_STDC_BEGIN

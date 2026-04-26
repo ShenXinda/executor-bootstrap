@@ -1,0 +1,5 @@
+- Executor组件可以执行Controller组件发来的如下复合动作指令：
+  * `repeat command n times`：将指定的任一动作指令重复执行n次；
+  * `{command1, command2, ...}`：按照顺序执行一组任意指令；
+
+注意：`repeat`和`command`列表中，能够支持任意的指令嵌套，包括互相嵌套；

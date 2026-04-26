@@ -1,4 +1,4 @@
-#include "executor/danger_zone_observer.h"
+#include "executor/private/danger_zone_observer.h"
 #include "executor/robot_executor.h"
 #include "alert/alert.h"
 

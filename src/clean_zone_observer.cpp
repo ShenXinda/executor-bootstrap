@@ -1,4 +1,4 @@
-#include "executor/clean_zone_observer.h"
+#include "executor/private/clean_zone_observer.h"
 #include "executor/robot_executor.h"
 #include "clean/clean.h"
 
